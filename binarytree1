@@ -1,0 +1,160 @@
+import java.util.Stack;
+
+
+    
+    
+public class binarytree{
+    private static class PairInputHelper{
+        Node node;
+        int state;
+
+        PairInputHelper(Node node){
+            this.node = node;
+            this.state = 0;
+        }
+    }
+    private static class Node{
+        int data;
+
+        Node left,right;
+
+        Node(int data){
+            this.data = data;
+            this.left = this.right = null;
+        }
+    }
+
+    static Node constructBT(Integer inp[]){
+        Node root=new Node(inp[0]);
+        Stack<PairInputHelper>st=new Stack<>();
+        st.push(new PairInputHelper(root));
+        int idx=1;
+        while(st.isEmpty()==false){
+            PairInputHelper tpair=st.peek();
+            if(tpair.state==0 || tpair.state==1){
+                if(inp[idx]==null){
+                    tpair.state++;
+                }
+                else{
+                    Node nnode=new Node(inp[idx]);
+                    if(tpair.state==0){
+                        tpair.node.left=nnode;
+                    }
+                    else{
+                        tpair.node.right=nnode;
+                    }
+                    tpair.state++;
+                    st.push(new PairInputHelper(nnode));
+                }
+                idx++;
+            }
+            else{
+                st.pop();
+            }
+        }
+        return root;
+
+    }
+    static int sum(Node root){
+        if(root==null){
+            return 0;
+        }
+        int leftsum=sum(root.left);
+        int rightsum=sum(root.right);
+        return root.data+leftsum+rightsum;
+    }
+    static int size(Node root){
+        if(root==null){
+            return 0;
+        }
+        int leftsize=size(root.left);
+        int rightsize=size(root.right);
+        return 1+leftsize+rightsize;
+    }
+    static int findheight(Node root){
+        if(root==null){
+            return -1;
+        }
+        int leftheight=findheight(root.left);
+        int rightheight=findheight(root.right);
+        return 1+Math.max(leftheight,rightheight);
+    }
+    static int findmax(Node root){
+        int max=Integer.MIN_VALUE;
+        if(root==null){
+            return max;
+        }
+        int leftmax=Math.max(max,findmax(root.left));
+        int rightmax=Math.max(max,findmax(root.right));
+        max=Math.max(leftmax,rightmax);
+        return Math.max(root.data,max);
+    }
+    static boolean find(Node node,int tar){
+        if(node==null){
+            return false;
+        }
+        if(node.data == tar){
+            return true;
+        }
+        boolean search=find(node.left,tar);
+        if(search){
+            return true;
+        }
+        else{
+            search=find(node.right,tar);
+        }
+        return search;
+    }
+
+    // static ArrayList<Integer> getNodeToRootPath(Node node, int tar){
+       
+    //     if(node==null){
+    //         return new ArrayList<>();
+    //     }
+    //     if(node.data==tar){
+    //         ArrayList<Integer>base=new ArrayList<>();
+    //         base.add(node.data);
+    //         return base;
+    //     }
+    //     ArrayList<Integer>
+       
+    //     return new ArrayList<>();
+    // }
+    static void printKleveldown(Node node,int level){
+        if(node==null){
+            return ;
+        }
+        if(level==0){
+            System.out.println(node.data);
+            return ;
+        }
+        printKleveldown(node.left,level-1);
+        printKleveldown(node.right,level-1);
+        
+
+    }
+
+    static void display(Node node){
+        if(node==null){
+            return ;
+        }
+        System.out.print(node.left==null ? ".": node.left.data);
+        System.out.print(node.data);
+        System.out.println(node.right==null ?".":node.right.data);
+        display(node.left);
+        display(node.right);
+    }
+    public static void main(String[] args) {
+        Integer input[] = {10,20,40,null,null,50,90,null,null,null,30,60,70,null,null,80,null,null,null};
+
+        Node root = constructBT(input);
+        //display(root);
+        // System.out.println(sum(root));
+        // System.out.println(size(root));
+        // System.out.println(findheight(root));
+        // System.out.println(findmax(root));
+        System.out.println(find(root,80));
+        printKleveldown(root,3);
+
+    }
+}
